@@ -63,7 +63,7 @@ class ConnectorClient(object):
         response = self.sock.recv(length[0])
         return json.loads(response.decode())
 
-    def __request(self, payload, wait=True, check=True):
+    def _request(self, payload, wait=True, check=True):
         self.send_request(payload)
         if not wait:
             return

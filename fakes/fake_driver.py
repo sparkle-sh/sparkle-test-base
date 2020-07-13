@@ -29,4 +29,4 @@ class FakeDriver(ConnectorClient):
                 "version": version
             }
         }
-        return self.__request(payload, False, False)
+        return self._request(payload, False, False)
