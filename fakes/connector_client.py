@@ -71,5 +71,7 @@ class ConnectorClient(object):
         header = res.get("header")
         content = res.get("content")
         if check:
-            assert header == payload.get("header")
+            payload_header = payload.get('header')
+            expected = payload_header[:payload_header.rfind('_')] + '_response'
+            assert header == expected
         return header, content
