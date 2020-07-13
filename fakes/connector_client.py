@@ -14,7 +14,7 @@ class ConnectorClient(object):
 
     def connect(self, host=CONNECTOR_HOST, port=CONNECTOR_PORT):
         print("connecting")
-        self.sock.settimeout(3)
+        self.sock.settimeout(15)
         self.sock.connect((host, port))
 
     def disconnect(self):
