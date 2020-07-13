@@ -1,7 +1,7 @@
 from .connector_client import ConnectorClient
 
 
-class DriverClient(ConnectorClient):
+class FakeDriver(ConnectorClient):
     def __init__(self):
         print("starting")
         super().__init__(session_type='driver')

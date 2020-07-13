@@ -1,3 +1,3 @@
-from .agent_client import AgentClient
+from .fake_agent import FakeAgent
 from .connector_client import ConnectorClient
-from .driver_client import DriverClient
+from .fake_driver import FakeDriver

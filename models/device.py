@@ -9,9 +9,9 @@ class DeviceType(enum.Enum):
 
 @dataclasses.dataclass
 class Device(object):
-    dtype: DeviceType
-    name: str
-    description: str
+    dtype: DeviceType = DeviceType.SWITCHABLE
+    name: str = 'example_name'
+    description: str = 'example_description'
 
     def serialize(self) -> dict:
         return {
