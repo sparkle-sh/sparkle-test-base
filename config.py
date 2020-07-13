@@ -1,0 +1,15 @@
+import os
+
+DEFAULT_HOST = '127.0.0.1'
+
+CONNECTOR_PORT = 7777
+CONNECTOR_HOST = os.getenv("CONNECTOR_HOST", DEFAULT_HOST)
+CONNECTOR_DOCKER = 'sparkle-connector'
+
+MIDPOINT_PORT = 7778
+MIDPOINT_HOST = os.getenv("MIDPOINT_HOST", DEFAULT_HOST)
+MIDPOINT_DOCKER = 'sparkle-midpoint'
+
+API_GW_PORT = 7779
+API_GW_HOST = os.getenv("API_GW_HOST", DEFAULT_HOST)
+API_GW_DOCKER = 'sparkle-api-gateway'

@@ -1,20 +1,12 @@
 from .connector_client import ConnectorClient
 
+
 class DriverClient(ConnectorClient):
     def __init__(self):
         print("starting")
         super().__init__(session_type='driver')
 
     def disconnect(self):
-        # request = {
-        #     "header": "disconnect_request",
-        #     "content": {}
-        # }
-
-        # self.send_request(request)
-        # response = self.get_response()
-        # assert response.get('header') == 'ack_response'
-
         super().disconnect()
 
     def register_devices(self, devices):

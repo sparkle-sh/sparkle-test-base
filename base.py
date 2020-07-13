@@ -4,28 +4,49 @@ import socket
 import os
 import docker
 
-from base.connector_client import ConnectorClient, CONNECTOR_HOST, CONNECTOR_PORT
+from .config import *
 
 
 class TestBase(unittest.TestCase):
     def setUp(self):
         super().setUp()
-
-        if os.getenv("SPARKLE_CONNECTOR_TEST_ENV") is not None:
-            client = docker.from_env()
-            self.container = client.containers.run(
-                image='sparkle-connector', entrypoint='./build/bin/sparkle-connector',
-                detach=True, ports={'7777/tcp': 7777}, auto_remove=True, name='sparkle-connector'
-            )
-        self.wait_for_connector()
+        self.modules = []
 
     def tearDown(self):
-        if os.getenv("SPARKLE_CONNECTOR_TEST_ENV") is not None:
-            self.container.kill()
+        for module in self.modules:
+            module.kill()
             time.sleep(1)
         super().tearDown()
 
-    def wait_for_connector(self, port=CONNECTOR_PORT, host=CONNECTOR_HOST, timeout=15.0):
+    def start_connector(self):
+        self.start_container(
+            CONNECTOR_DOCKER, entrypoint='./build/bin/sparkle-connector', ports={'7777/tcp': 7777})
+
+    def start_midpoint(self):
+        self.start_container(
+            MIDPOINT_DOCKER, entrypoint='./bin/spawn.sh', ports={'7778/tcp': 7778})
+
+    def start_api_gateway(self):
+        pass
+
+    def start_container(self, image, entrypoint, ports):
+        client = docker.from_env()
+        container = client.containers.run(
+            image=image, entrypoint=entrypoint,
+            detach=True, ports=ports, auto_remove=True, name=image
+        )
+        self.modules.append(container)
+
+    def wait_for_connector(self):
+        self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
+
+    def wait_for_midpoint(self):
+        self.wait_for(MIDPOINT_PORT, MIDPOINT_HOST)
+
+    def wait_for_api_gw(self):
+        self.wait_for(API_GW_PORT, API_GW_HOST)
+
+    def wait_for(self, port, host, timeout=15.0):
         start_time = time.perf_counter()
         while True:
             try:
