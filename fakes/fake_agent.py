@@ -17,3 +17,20 @@ class FakeAgent(ConnectorClient):
         assert response.get('header') == 'ack_response'
 
         super().disconnect()
+
+    def list_devices(self, wait=True, check=True):
+        payload = {
+            "header": "list_devices_request",
+            "content": {
+            }
+        }
+        return self.__request(payload, wait, check)
+
+    def get_device_info(self, device_id, wait=True, check=True):
+        payload = {
+            "header": "get_device_info_request",
+            "content": {
+                "device_id": device_id
+            }
+        }
+        return self.__request(payload, wait, check)

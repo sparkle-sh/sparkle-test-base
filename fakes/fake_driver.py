@@ -21,3 +21,12 @@ class FakeDriver(ConnectorClient):
         res = self.get_response()
 
         assert res.get('header') == 'ack_response'
+
+    def send_device_info(self, version):
+        payload = {
+            "header": "get_device_info_response",
+            "content": {
+                "version": version
+            }
+        }
+        return self.__request(payload, False, False)
