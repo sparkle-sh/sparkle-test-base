@@ -27,11 +27,10 @@ class FakeAgent(ConnectorClient):
         return self._request(payload, wait, check)
 
     def get_device_info(self, device_id, wait=True, check=True):
-         payload = {
+        payload = {
             "header": "get_device_info_request",
             "content": {
                 "device_id": device_id
             }
         }
         return self._request(payload, wait, check)
-
