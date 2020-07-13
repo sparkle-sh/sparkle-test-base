@@ -1,7 +1,7 @@
 from .connector_client import ConnectorClient
 
 
-class FakeClient(ConnectorClient):
+class FakeAgent(ConnectorClient):
     def __init__(self):
         print("starting")
         super().__init__(session_type='agent')
