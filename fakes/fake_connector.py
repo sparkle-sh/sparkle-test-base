@@ -22,6 +22,7 @@ class FakeConnector(threading.Thread):
         self.queue.put(response)
 
     def stop(self):
-        self.is_running = False
-        self.socket.close()
-        self.join()
+        if self.is_running:
+            self.is_running = False
+            self.socket.close()
+            self.join()
