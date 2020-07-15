@@ -25,7 +25,7 @@ class SwitchableDeviceDatasheet(Datasheet):
 @dataclasses.dataclass
 class SensorDeviceDatasheet(Datasheet):
     labels: List[str] = dataclasses.field(
-        default_factory=list, default=["value"])
+        default_factory=list, default=["temperature"])
 
     def serialize(self) -> dict:
         return {
