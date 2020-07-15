@@ -4,8 +4,8 @@ import enum
 
 
 class DeviceType(enum.Enum):
-    SWITCHABLE = 1
-    SENSOR = 2
+    SWITCHABLE = 0
+    SENSOR = 1
 
 
 class Datasheet(object):
