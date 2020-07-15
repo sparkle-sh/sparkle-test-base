@@ -17,7 +17,7 @@ class TestBase(unittest.TestCase):
     def tearDown(self):
         for module in self.modules:
             module.kill()
-            time.sleep(5)
+            time.sleep(1)
         super().tearDown()
 
     def is_test_env(self):
@@ -68,7 +68,8 @@ class TestBase(unittest.TestCase):
                 with socket.create_connection((host, port), timeout=timeout):
                     break
             except OSError as ex:
-                time.sleep(0.01)
+                time.sleep(0.1)
                 if time.perf_counter() - start_time >= timeout:
                     self.fail(
                         'Waited too long for the port {} on host {} to start accepting connections.'.format(port, host))
+        time.sleep(5)
