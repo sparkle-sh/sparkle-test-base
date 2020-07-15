@@ -19,6 +19,9 @@ class TestBase(unittest.TestCase):
             time.sleep(1)
         super().tearDown()
 
+    def is_test_env(self):
+        return os.getenv("SPARKLE_TEST_ENV") is not None
+
     def wrapped_request(self, method, url, **kwargs):
         body = {}
         try:
