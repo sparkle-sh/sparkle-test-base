@@ -3,6 +3,7 @@ import time
 import socket
 import os
 import docker
+import json
 import requests
 
 from .config import *
@@ -25,7 +26,7 @@ class TestBase(unittest.TestCase):
     def wrapped_request(self, method, url, **kwargs):
         body = {}
         try:
-            res = method("{}{}".format(url), **kwargs)
+            res = method(url, **kwargs)
             if res.headers["content-type"] == 'application/json':
                 body = json.loads(res.text)
             return res.status_code, body
