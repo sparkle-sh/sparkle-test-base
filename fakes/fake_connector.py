@@ -17,8 +17,10 @@ class FakeConnector(threading.Thread):
     def run(self):
         self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
         self.socket.listen(5)
+        print("listening")
         while self.is_running:
-            self.socket.recv(1024)
+            length = struct.unpack("I", self.socket.recv(4))
+            _ = self.socket.recv(length[0])
             payload = json.dumps(self.queue.get())
             self.socket.sendall(struct.pack("I", len(payload)))
             self.socket.sendall(payload.encode())
