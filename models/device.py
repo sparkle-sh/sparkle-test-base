@@ -14,7 +14,7 @@ class Datasheet(object):
 
 @dataclasses.dataclass
 class SwitchableDeviceDatasheet(Datasheet):
-    states: List[int] = dataclasses.field(default_factory=list, default=[0, 1])
+    states: List[int] = dataclasses.field(default=[0, 1])
 
     def serialize(self) -> dict:
         return {
@@ -24,8 +24,7 @@ class SwitchableDeviceDatasheet(Datasheet):
 
 @dataclasses.dataclass
 class SensorDeviceDatasheet(Datasheet):
-    labels: List[str] = dataclasses.field(
-        default_factory=list, default=["temperature"])
+    labels: List[str] = dataclasses.field(default=["temperature"])
 
     def serialize(self) -> dict:
         return {
