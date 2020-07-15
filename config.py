@@ -9,10 +9,10 @@ CONNECTOR_DOCKER = 'sparkle-connector'
 MIDPOINT_PORT = 7778
 MIDPOINT_HOST = os.getenv("MIDPOINT_HOST", DEFAULT_HOST)
 MIDPOINT_DOCKER = 'sparkle-midpoint'
-MIDPOINT_API_BASE = "http://{}:{}/".format(MIDPOINT_HOST, MIDPOINT_PORT)
+MIDPOINT_API_BASE = "http://{}:{}".format(MIDPOINT_HOST, MIDPOINT_PORT)
 
 
 API_GW_PORT = 7779
 API_GW_HOST = os.getenv("API_GW_HOST", DEFAULT_HOST)
 API_GW_DOCKER = 'sparkle-api-gateway'
-API_GW_API_BASE = "http://{}:{}/".format(API_GW_HOST, API_GW_PORT)
+API_GW_API_BASE = "http://{}:{}".format(API_GW_HOST, API_GW_PORT)
