@@ -11,13 +11,14 @@ class Datasheet(object):
     def serialize(self) -> dict:
         raise NotImplementedError
 
+
 @dataclasses.dataclass
 class SwitchableDeviceDatasheet(Datasheet):
     states: []
 
     def serialize(self) -> dict:
         return {
-            "states": self.states        
+            "states": self.states
         }
 
 
@@ -27,7 +28,7 @@ class SensorDeviceDatasheet(Datasheet):
 
     def serialize(self) -> dict:
         return {
-            "labels": self.labels        
+            "labels": self.labels
         }
 
 
@@ -36,7 +37,7 @@ class Device(object):
     dtype: DeviceType = DeviceType.SWITCHABLE
     name: str = 'example_name'
     description: str = 'example_description'
-    datasheet: Datasheet = SwitchableDeviceDatasheet
+    datasheet: Datasheet = SwitchableDeviceDatasheet()
 
     def serialize(self) -> dict:
         return {
@@ -45,4 +46,3 @@ class Device(object):
             "description": self.description,
             "datasheet":  self.datasheet.serialize()
         }
-
