@@ -14,7 +14,7 @@ class Datasheet(object):
 
 @dataclasses.dataclass
 class SwitchableDeviceDatasheet(Datasheet):
-    states: []
+    states: [] = [0, 1]
 
     def serialize(self) -> dict:
         return {
@@ -24,7 +24,7 @@ class SwitchableDeviceDatasheet(Datasheet):
 
 @dataclasses.dataclass
 class SensorDeviceDatasheet(Datasheet):
-    labels: []
+    labels: [] = ["temperature"]
 
     def serialize(self) -> dict:
         return {
