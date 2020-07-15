@@ -16,14 +16,15 @@ class FakeConnector(threading.Thread):
 
     def run(self):
         self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
-        self.socket.listen(5)
-        print("listening")
-        while self.is_running:
-            length = struct.unpack("I", self.socket.recv(4))
-            _ = self.socket.recv(length[0])
-            payload = json.dumps(self.queue.get())
-            self.socket.sendall(struct.pack("I", len(payload)))
-            self.socket.sendall(payload.encode())
+        self.socket.listen(1)
+        conn, addr = self.socket.accept()
+        with conn:
+            while self.is_running:
+                length = struct.unpack("I", conn.recv(4))
+                _ = conn.recv(length[0])
+                payload = json.dumps(self.queue.get())
+                conn.sendall(struct.pack("I", len(payload)))
+                conn.sendall(payload.encode())
 
     def enqueue_response(self, response):
         self.queue.put(response)
