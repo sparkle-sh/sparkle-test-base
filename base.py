@@ -17,7 +17,7 @@ class TestBase(unittest.TestCase):
     def tearDown(self):
         for module in self.modules:
             module.kill()
-            time.sleep(1)
+            time.sleep(5)
         super().tearDown()
 
     def is_test_env(self):
