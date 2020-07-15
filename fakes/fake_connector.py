@@ -9,6 +9,7 @@ from ..config import CONNECTOR_PORT
 
 class FakeConnector(threading.Thread):
     def __init__(self):
+        super().__init__()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.is_running = True
         self.queue = queue.Queue()
