@@ -4,6 +4,8 @@ import queue
 import json
 import struct
 
+from ..config import CONNECTOR_PORT
+
 
 class FakeConnector(threading.Thread):
     def __init__(self):
@@ -12,6 +14,8 @@ class FakeConnector(threading.Thread):
         self.queue = queue.Queue()
 
     def run(self):
+        self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
+        self.socket.listen(5)
         while self.is_running:
             self.socket.recv(1024)
             payload = json.dumps(self.queue.get())
