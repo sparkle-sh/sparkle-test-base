@@ -20,8 +20,7 @@ class FakeConnector(threading.Thread):
         conn, addr = self.socket.accept()
         with conn:
             while self.is_running:
-                length = struct.unpack("I", conn.recv(4))
-                _ = conn.recv(length[0])
+                conn.recv(1024)
                 payload = json.dumps(self.queue.get())
                 conn.sendall(struct.pack("I", len(payload)))
                 conn.sendall(payload.encode())
