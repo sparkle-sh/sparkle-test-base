@@ -3,6 +3,7 @@ import time
 import socket
 import os
 import docker
+import requests
 
 from .config import *
 
@@ -18,15 +19,25 @@ class TestBase(unittest.TestCase):
             time.sleep(1)
         super().tearDown()
 
-    def start_connector(self):
+    def wrapped_request(self, method, url, **kwargs):
+        body = {}
+        try:
+            res = method("{}{}".format(url), **kwargs)
+            if res.headers["content-type"] == 'application/json':
+                body = json.loads(res.text)
+            return res.status_code, body
+        except requests.exceptions.ConnectionError as e:
+            self.fail("endpoint provider is down")
+
+    def start_connector(self, local=True):
         self.start_container(
             CONNECTOR_DOCKER, entrypoint='./build/bin/sparkle-connector', ports={'7777/tcp': 7777})
 
-    def start_midpoint(self):
+    def start_midpoint(self, local=True):
         self.start_container(
             MIDPOINT_DOCKER, entrypoint='./bin/spawn.sh', ports={'7778/tcp': 7778})
 
-    def start_api_gateway(self):
+    def start_api_gateway(self, local=True):
         pass
 
     def start_container(self, image, entrypoint, ports):
