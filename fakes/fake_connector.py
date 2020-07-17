@@ -22,7 +22,7 @@ class FakeConnector(threading.Thread):
     def run(self):
         print("starting")
         try:
-            self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
+            self.socket.bind(("0.0.0.0", CONNECTOR_PORT))
             self.socket.listen(5)
             print("waiting for connection")
             self.client, addr = self.socket.accept()
