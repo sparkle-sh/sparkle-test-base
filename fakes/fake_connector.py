@@ -11,6 +11,7 @@ from .config import CONNECTOR_PORT
 
 class FakeConnector(threading.Thread):
     def __init__(self):
+        print("creating thread")
         super().__init__(daemon=True)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -19,16 +20,22 @@ class FakeConnector(threading.Thread):
         self.client = None
 
     def run(self):
+        print("starting")
         try:
             self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
             self.socket.listen(5)
+            print("waiting for connection")
             self.client, addr = self.socket.accept()
+            print("accepted connection")
             while self.is_running:
+                print("waiting for request")
                 self.client.recv(1024)
                 payload = json.dumps(self.queue.get())
+                print("sending response")
                 self.client.sendall(struct.pack("I", len(payload)))
                 self.client.sendall(payload.encode())
         except OSError as e:
+            print("error %s" % str(e))
             if self.is_running:
                 raise
 
