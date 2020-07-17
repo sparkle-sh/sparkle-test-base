@@ -48,7 +48,7 @@ class TestBase(unittest.TestCase):
         client = docker.from_env()
         container = client.containers.run(
             image=image, entrypoint=entrypoint,
-            detach=True, ports=ports, auto_remove=True, name=image
+            detach=True, ports=ports, auto_remove=True, name=image, network="host"
         )
         self.modules.append(container)
 
