@@ -10,6 +10,9 @@ import signal
 from .config import CONNECTOR_PORT
 
 
+# TODO: this is really ugly and probably have a lot of undefined behaviours,
+# it was developed ASAP to test product -> FIX AND MAKE IT STABLE!
+
 class FakeConnector(threading.Thread):
     def __init__(self):
         print("creating thread")
@@ -37,6 +40,8 @@ class FakeConnector(threading.Thread):
                 self.client.sendall(payload.encode())
         except (OSError, KeyboardInterrupt) as e:
             print("error %s" % str(e))
+        finally:
+            self.socket.close()
 
     def enqueue_response(self, response):
         self.queue.put(response)
@@ -48,8 +53,9 @@ class FakeConnector(threading.Thread):
                 self.socket.shutdown(socket.SHUT_RDWR)
                 self.socket.close()
                 self.is_running = False
-                self.client.shutdown(socket.SHUT_RDWR)
-                self.client.close()
+                if self.client is not None:
+                    self.client.shutdown(socket.SHUT_RDWR)
+                    self.client.close()
             except OSError:
                 pass
 
