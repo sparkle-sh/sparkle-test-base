@@ -15,6 +15,8 @@ class FakeConnector(threading.Thread):
         super().__init__(daemon=True)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind(("0.0.0.0", CONNECTOR_PORT))
+        self.socket.listen(5)
         self.is_running = True
         self.queue = queue.Queue()
         self.client = None
@@ -22,8 +24,6 @@ class FakeConnector(threading.Thread):
     def run(self):
         print("starting")
         try:
-            self.socket.bind(("0.0.0.0", CONNECTOR_PORT))
-            self.socket.listen(5)
             print("waiting for connection")
             self.client, addr = self.socket.accept()
             print("accepted connection")
