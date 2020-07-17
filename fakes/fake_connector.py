@@ -45,13 +45,17 @@ class FakeConnector(threading.Thread):
     def stop(self):
         time.sleep(1)
         if self.is_running:
-            self.socket.shutdown(socket.SHUT_RDWR)
-            self.socket.close()
-            self.is_running = False
-            if self.client:
-                self.client.shutdown(socket.SHUT_RDWR)
-                self.client.close()
-            self.join()
+            try:
+                self.socket.shutdown(socket.SHUT_RDWR)
+                self.socket.close()
+                self.is_running = False
+                if self.client:
+                    self.client.shutdown(socket.SHUT_RDWR)
+                    self.client.close()
+            except OSError:
+                pass
+            finally:
+                self.join()
 
 
 if __name__ == "__main__":
