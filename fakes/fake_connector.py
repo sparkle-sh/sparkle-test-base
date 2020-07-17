@@ -3,13 +3,15 @@ import threading
 import queue
 import json
 import struct
+import time
+import asyncio
 
-from ..config import CONNECTOR_PORT
+from config import CONNECTOR_PORT
 
 
 class FakeConnector(threading.Thread):
     def __init__(self):
-        super().__init__()
+        super().__init__(daemon=True)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.is_running = True
@@ -20,14 +22,13 @@ class FakeConnector(threading.Thread):
         try:
             self.socket.bind(("127.0.0.1", CONNECTOR_PORT))
             self.socket.listen(5)
-
             self.client, addr = self.socket.accept()
             while self.is_running:
                 self.client.recv(1024)
                 payload = json.dumps(self.queue.get())
                 self.client.sendall(struct.pack("I", len(payload)))
                 self.client.sendall(payload.encode())
-        except OSError:
+        except OSError as e:
             if self.is_running:
                 raise
 
@@ -35,10 +36,19 @@ class FakeConnector(threading.Thread):
         self.queue.put(response)
 
     def stop(self):
+        time.sleep(1)
         if self.is_running:
+            self.socket.shutdown(socket.SHUT_RDWR)
             self.socket.close()
             self.is_running = False
             if self.client:
                 self.client.shutdown(socket.SHUT_RDWR)
                 self.client.close()
             self.join()
+
+
+if __name__ == "__main__":
+    f = FakeConnector()
+    f.start()
+    time.sleep(5)
+    f.stop()
