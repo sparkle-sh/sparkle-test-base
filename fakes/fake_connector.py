@@ -6,7 +6,7 @@ import struct
 import time
 import asyncio
 
-from config import CONNECTOR_PORT
+from .config import CONNECTOR_PORT
 
 
 class FakeConnector(threading.Thread):
