@@ -5,6 +5,7 @@ import json
 import struct
 import time
 import asyncio
+import signal
 
 from .config import CONNECTOR_PORT
 
@@ -34,10 +35,8 @@ class FakeConnector(threading.Thread):
                 print("sending response")
                 self.client.sendall(struct.pack("I", len(payload)))
                 self.client.sendall(payload.encode())
-        except OSError as e:
+        except (OSError, KeyboardInterrupt) as e:
             print("error %s" % str(e))
-            if self.is_running:
-                raise
 
     def enqueue_response(self, response):
         self.queue.put(response)
@@ -49,13 +48,10 @@ class FakeConnector(threading.Thread):
                 self.socket.shutdown(socket.SHUT_RDWR)
                 self.socket.close()
                 self.is_running = False
-                if self.client:
-                    self.client.shutdown(socket.SHUT_RDWR)
-                    self.client.close()
+                self.client.shutdown(socket.SHUT_RDWR)
+                self.client.close()
             except OSError:
                 pass
-            finally:
-                self.join()
 
 
 if __name__ == "__main__":
