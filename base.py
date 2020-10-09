@@ -67,7 +67,7 @@ class TestBase(unittest.TestCase):
         while True:
             try:
                 self.db_conn = psycopg2.connect(
-                    database='sparkledb', user='sparkle', host='127.0.0.1', password='foobar')
+                    database='sparkledb', user='sparkle', host='sparkledb', password='foobar')
                 return
             except:
                 pass
