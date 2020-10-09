@@ -35,14 +35,15 @@ class TestBase(unittest.TestCase):
 
     def start_connector(self, local=True):
         self.start_container(
-            CONNECTOR_DOCKER, entrypoint='./build/bin/sparkle-connector', ports={'7777/tcp': 7777})
+            CONNECTOR_DOCKER, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
 
     def start_midpoint(self, local=True):
         self.start_container(
-            MIDPOINT_DOCKER, entrypoint='./bin/spawn.sh', ports={'7778/tcp': 7778})
+            MIDPOINT_DOCKER, entrypoint='./bin/spawn.sh', ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
 
     def start_api_gateway(self, local=True):
-        pass
+        self.start_container(
+            API_GW_DOCKER, entrypoint='./bin/spawn.sh', ports={f'{API_GW_PORT}/tcp': API_GW_PORT})
 
     def start_container(self, image, entrypoint, ports):
         client = docker.from_env()
