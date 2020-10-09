@@ -53,7 +53,7 @@ class TestBase(unittest.TestCase):
             kwargs.update({'name': image})
         container = client.containers.run(
             image=image,
-            detach=True, auto_remove=True, network="host", **kwargs
+            detach=True, auto_remove=True, network="sparkle-net", **kwargs
         )
         self.modules.append(container)
 
