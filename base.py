@@ -45,13 +45,28 @@ class TestBase(unittest.TestCase):
         self.start_container(
             API_GW_DOCKER, entrypoint='./bin/spawn.sh', ports={f'{API_GW_PORT}/tcp': API_GW_PORT})
 
-    def start_container(self, image, entrypoint, ports):
+    def start_container(self, image, **kwargs):
         client = docker.from_env()
+        if 'name' not in kwargs:
+            kwargs.update({'name': image})
         container = client.containers.run(
-            image=image, entrypoint=entrypoint,
-            detach=True, ports=ports, auto_remove=True, name=image, network="host"
+            image=image,
+            detach=True, auto_remove=True, network="host", **kwargs
         )
         self.modules.append(container)
+
+    def start_database(self):
+        volume = '{}/schema.sql'.format(os.getenv("MISC"))
+        self.start_container('postgres:12', name='sparkledb', ports={'5432/tcp': 5432}, environment=['POSTGRES_PASSWORD=foo'],
+                             volumes={volume: {'bind': '/docker-entrypoint-initdb.d/schema.sql', 'mode': 'rw'}})
+
+    # def start_container(self, image, entrypoint, ports):
+    #     client = docker.from_env()
+    #     container = client.containers.run(
+    #         image=image, entrypoint=entrypoint,
+    #         detach=True, ports=ports, auto_remove=True, name=image, network="host"
+    #     )
+    #     self.modules.append(container)
 
     def wait_for_connector(self):
         self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
