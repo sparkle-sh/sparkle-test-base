@@ -5,6 +5,8 @@ import os
 import docker
 import json
 import requests
+import psycopg2
+from timeit import default_timer as timer
 
 from .config import *
 
@@ -60,13 +62,19 @@ class TestBase(unittest.TestCase):
         self.start_container('postgres:12', name='sparkledb', ports={'5432/tcp': 5432}, environment=['POSTGRES_PASSWORD=foo'],
                              volumes={volume: {'bind': '/docker-entrypoint-initdb.d/schema.sql', 'mode': 'rw'}})
 
-    # def start_container(self, image, entrypoint, ports):
-    #     client = docker.from_env()
-    #     container = client.containers.run(
-    #         image=image, entrypoint=entrypoint,
-    #         detach=True, ports=ports, auto_remove=True, name=image, network="host"
-    #     )
-    #     self.modules.append(container)
+    def wait_for_database(self, timeout=15.0):
+        start_time = timer()
+        while True:
+            try:
+                self.db_conn = psycopg2.connect(
+                    database='sparkledb', user='sparkle', host='127.0.0.1', password='foobar')
+                return
+            except:
+                pass
+
+            if (timer() - start_time > timeout):
+                self.fail('Waited to long for database connection.')
+            time.sleep(5)
 
     def wait_for_connector(self):
         self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
@@ -74,7 +82,7 @@ class TestBase(unittest.TestCase):
     def wait_for_midpoint(self):
         self.wait_for(MIDPOINT_PORT, MIDPOINT_HOST)
 
-    def wait_for_api_gw(self):
+    def wait_for_api_gateway(self):
         self.wait_for(API_GW_PORT, API_GW_HOST)
 
     def wait_for(self, port, host, timeout=15.0):
