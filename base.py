@@ -37,11 +37,11 @@ class TestBase(unittest.TestCase):
 
     def start_connector(self, local=False):
         self.start_container(
-            CONNECTOR_DOCKER, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
+            CONNECTOR_DOCKER, local, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
 
     def start_midpoint(self, local=False):
         self.start_container(
-            MIDPOINT_DOCKER, entrypoint='./bin/spawn.sh', ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
+            MIDPOINT_DOCKER, local, entrypoint='./bin/spawn.sh', ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
 
     def start_api_gateway(self, local=False):
         self.start_container(
