@@ -28,7 +28,8 @@ class TestBase(unittest.TestCase):
 
     def save_cov(self, module):
         name = module.name
-        bits, stat = module.get_archive('.coveragerc')
+        
+        bits, stat = module.get_archive('./.coveragerc')
         with open(f'./{name}-cov/{str(uuid.uuid4())}.tar', 'wb') as f:
             for chunk in bits:
                 f.write(chunk)
