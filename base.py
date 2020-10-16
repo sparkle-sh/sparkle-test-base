@@ -1,6 +1,7 @@
 import unittest
 import time
 import socket
+import uuid
 import os
 import docker
 import json
@@ -15,12 +16,22 @@ class TestBase(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.modules = []
+        self.cov = {}
 
     def tearDown(self):
         for module in self.modules:
+            if module.name in self.cov:
+                self.save_cov(module)
             module.kill()
             time.sleep(1)
         super().tearDown()
+
+    def save_cov(self, module):
+        name = module.name
+        bits, stat = module.get_archive('.coveragerc')
+        with open(f'./{name}-cov/{str(uuid.uuid4())}.tar', 'wb') as f:
+            for chunk in bits:
+                f.write(chunk)
 
     def is_test_env(self):
         return os.getenv("SPARKLE_TEST_ENV") is not None
@@ -39,9 +50,13 @@ class TestBase(unittest.TestCase):
         self.start_container(
             CONNECTOR_DOCKER, local, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
 
-    def start_midpoint(self, local=False):
+    def start_midpoint(self, local=False, with_cov=False):
+        spawn = './bin/spawn.sh'
+        if with_cov:
+            spawn += ' --with-cov'
+        self.cov[MIDPOINT_DOCKER] = True
         self.start_container(
-            MIDPOINT_DOCKER, local, entrypoint='./bin/spawn.sh', ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
+            MIDPOINT_DOCKER, local, entrypoint=spawn, ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
 
     def start_api_gateway(self, local=False):
         self.start_container(
