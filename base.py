@@ -40,7 +40,7 @@ class TestBase(unittest.TestCase):
     def save_test_logs(self, module):
         name = module.name
         bits, stat = module.get_archive(f'{name}/logs/{name}.log')
-        with open(f'./{name}-cov/{self.id()}.tar', 'wb') as f:
+        with open(f'./{name}/logs/{self.id()}.tar', 'wb') as f:
             for chunk in bits:
                 f.write(chunk)
 
@@ -104,9 +104,6 @@ class TestBase(unittest.TestCase):
             if (timer() - start_time > timeout):
                 self.fail('Waited to long for database connection.')
             time.sleep(5)
-
-    def get_db_cursor(self):
-        return self.db_conn.cursor()
 
     def wait_for_connector(self):
         self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
