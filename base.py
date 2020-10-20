@@ -47,6 +47,9 @@ class TestBase(unittest.TestCase):
     def is_test_env(self):
         return os.getenv("SPARKLE_TEST_ENV") is not None
 
+    def get_db_cursor(self):
+        return self.db_conn.cursor()
+
     def wrapped_request(self, method, url, **kwargs):
         body = {}
         try:
