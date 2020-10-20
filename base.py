@@ -73,9 +73,9 @@ class TestBase(unittest.TestCase):
         )
         self.modules.append(container)
 
-    def start_database(self):
+    def start_database(self, local=False):
         volume = '{}/schema.sql'.format(os.getenv("MISC"))
-        self.start_container('postgres:12', name='sparkledb', ports={'5432/tcp': 5432}, environment=['POSTGRES_PASSWORD=foo'],
+        self.start_container('postgres:12', local, name='sparkledb', ports={'5432/tcp': 5432}, environment=['POSTGRES_PASSWORD=foo'],
                              volumes={volume: {'bind': '/docker-entrypoint-initdb.d/schema.sql', 'mode': 'rw'}})
 
     def wait_for_database(self, timeout=15.0):
