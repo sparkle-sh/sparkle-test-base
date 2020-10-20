@@ -17,11 +17,14 @@ class TestBase(unittest.TestCase):
         super().setUp()
         self.modules = []
         self.cov = {}
+        self.save_logs = {}
 
     def tearDown(self):
         for module in self.modules:
             if module.name in self.cov:
                 self.save_cov(module)
+            if module.name in self.save_logs:
+                self.save_test_logs(module)
             module.kill()
             time.sleep(1)
         super().tearDown()
@@ -34,8 +37,18 @@ class TestBase(unittest.TestCase):
             for chunk in bits:
                 f.write(chunk)
 
+    def save_test_logs(self, module):
+        name = module.name
+        bits, stat = module.get_archive(f'{name}/logs/{name}.log')
+        with open(f'./logs/{self.id()}.tar', 'wb') as f:
+            for chunk in bits:
+                f.write(chunk)
+
     def is_test_env(self):
         return os.getenv("SPARKLE_TEST_ENV") is not None
+
+    def get_db_cursor(self):
+        return self.db_conn.cursor()
 
     def wrapped_request(self, method, url, **kwargs):
         body = {}
@@ -51,11 +64,14 @@ class TestBase(unittest.TestCase):
         self.start_container(
             CONNECTOR_DOCKER, local, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
 
-    def start_midpoint(self, local=False, with_cov=False):
+    def start_midpoint(self, local=False, with_cov=False, save_logs=False):
         spawn = './bin/spawn.sh'
         if with_cov:
             spawn += ' --with-cov'
-        self.cov[MIDPOINT_DOCKER] = True
+            self.cov[MIDPOINT_DOCKER] = True
+        if save_logs:
+            self.save_logs[MIDPOINT_DOCKER] = True
+
         self.start_container(
             MIDPOINT_DOCKER, local, entrypoint=spawn, ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
 
@@ -91,9 +107,6 @@ class TestBase(unittest.TestCase):
             if (timer() - start_time > timeout):
                 self.fail('Waited to long for database connection.')
             time.sleep(5)
-
-    def get_db_cursor(self):
-        return self.db_conn.cursor()
 
     def wait_for_connector(self):
         self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
