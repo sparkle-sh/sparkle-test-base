@@ -40,7 +40,7 @@ class TestBase(unittest.TestCase):
     def save_test_logs(self, module):
         name = module.name
         module.exec_run(f"mv {name}/logs/{name}.log {name}/logs/{self.id()}.log")
-        bits, stat = module.get_archive(f'{name}/logs/{name}.log')
+        bits, stat = module.get_archive(f'{name}/logs/{self.id()}.log')
         with open(f'./logs/{self.id()}.tar', 'wb') as f:
             for chunk in bits:
                 f.write(chunk)
