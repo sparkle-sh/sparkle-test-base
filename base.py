@@ -105,6 +105,9 @@ class TestBase(unittest.TestCase):
                 self.fail('Waited to long for database connection.')
             time.sleep(5)
 
+    def get_db_cursor(self):
+        return self.db_conn.cursor()
+
     def wait_for_connector(self):
         self.wait_for(CONNECTOR_PORT, CONNECTOR_HOST)
 
