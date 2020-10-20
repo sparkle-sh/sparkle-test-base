@@ -17,11 +17,14 @@ class TestBase(unittest.TestCase):
         super().setUp()
         self.modules = []
         self.cov = {}
+        self.save_logs = {}
 
     def tearDown(self):
         for module in self.modules:
             if module.name in self.cov:
                 self.save_cov(module)
+            if module.name in self.save_logs:
+                self.save_test_logs(module)
             module.kill()
             time.sleep(1)
         super().tearDown()
@@ -31,6 +34,13 @@ class TestBase(unittest.TestCase):
         
         bits, stat = module.get_archive(f'/{name}/.coverage')
         with open(f'./{name}-cov/{str(uuid.uuid4())}.tar', 'wb') as f:
+            for chunk in bits:
+                f.write(chunk)
+
+    def save_test_logs(self, module):
+        name = module.name
+        bits, stat = module.get_archive(f'{name}/logs/{name}.log')
+        with open(f'./{name}-cov/{self.id()}.tar', 'wb') as f:
             for chunk in bits:
                 f.write(chunk)
 
@@ -51,11 +61,14 @@ class TestBase(unittest.TestCase):
         self.start_container(
             CONNECTOR_DOCKER, local, entrypoint='./build/bin/sparkle-connector', ports={f'{CONNECTOR_PORT}/tcp': CONNECTOR_PORT})
 
-    def start_midpoint(self, local=False, with_cov=False):
+    def start_midpoint(self, local=False, with_cov=False, save_logs=False):
         spawn = './bin/spawn.sh'
         if with_cov:
             spawn += ' --with-cov'
-        self.cov[MIDPOINT_DOCKER] = True
+            self.cov[MIDPOINT_DOCKER] = True
+        if save_logs:
+            self.save_logs[MIDPOINT_DOCKER] = True
+
         self.start_container(
             MIDPOINT_DOCKER, local, entrypoint=spawn, ports={f'{MIDPOINT_PORT}/tcp': MIDPOINT_PORT})
 
