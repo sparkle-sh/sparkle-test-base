@@ -5,9 +5,20 @@ from fakes.fake_driver import FakeDriver
 from models.device import *
 
 
-def listen_for_events(client, device):
+def start_switchable_device(client, device):
     while True:
         header, content = client.get_validated_response()
+
+        if header == 'switch_device_state_request':
+            res = {
+                "header": "ack_response",
+                "content": {}
+            }
+            client.send_request(res)
+
+
+def start_sensor(client, device):
+    pass
 
 
 def start(args):
@@ -24,7 +35,11 @@ def start(args):
     else:
         raise RuntimeError("Invalid device type")
     client.register_devices([device])
-    listen_for_events(client, device)
+
+    if args.type == 'sensor':
+        start_sensor(client, device)
+    else:
+        start_switchable_device(client, device)
 
 
 def main():
