@@ -31,7 +31,7 @@ class TestBase(unittest.TestCase):
 
     def save_cov(self, module):
         name = module.name
-        
+        module.exec_run("killall coverage")
         bits, stat = module.get_archive(f'/{name}/.coverage')
         with open(f'./{name}-cov/{str(uuid.uuid4())}.tar', 'wb') as f:
             for chunk in bits:
