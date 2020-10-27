@@ -25,7 +25,8 @@ class TestBase(unittest.TestCase):
                 self.save_test_logs(module)
             if module.name in self.cov:
                 self.save_cov(module)
-            module.kill()
+            if module.status == 'running':
+                module.kill()
             time.sleep(1)
         super().tearDown()
 
