@@ -6,15 +6,28 @@ from models.device import *
 
 
 def start_switchable_device(client, device):
+    state = 0
     while True:
-        header, content = client.get_validated_response()
+        header, content = client.get_validated_request()
 
         if header == 'switch_device_state_request':
             res = {
                 "header": "ack_response",
                 "content": {}
             }
-            client.send_request(res)
+            new_state= content.get("state")
+            print(f"I have changed state from {state} to {new_state}")
+            state= new_state
+            client.send_response(res)
+
+        if header == 'get_device_state_request':
+            res = {
+                "header": "get_device_state_response",
+                "content": {
+                    "state": state
+                }
+            }
+            client.send_response(res)
 
 
 def start_sensor(client, device):
@@ -24,6 +37,7 @@ def start_sensor(client, device):
 def start(args):
     client = FakeDriver()
     client.connect(args.host, int(args.port))
+    client.sock.settimeout(None)
     client.send_handshake()
 
     device = None
