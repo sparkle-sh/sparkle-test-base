@@ -21,10 +21,10 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         for module in self.modules:
-            if module.name in self.cov:
-                self.save_cov(module)
             if module.name in self.save_logs:
                 self.save_test_logs(module)
+            if module.name in self.cov:
+                self.save_cov(module)
             module.kill()
             time.sleep(1)
         super().tearDown()
