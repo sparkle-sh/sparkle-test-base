@@ -34,5 +34,5 @@ class FakeDriver(ConnectorClient):
     def get_validated_request(self):
         return self.get_validated_response()
 
-    def send_response(self):
-        return self.send_request()
+    def send_response(self, msg):
+        return self.send_request(msg)
