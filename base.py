@@ -21,17 +21,18 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         for module in self.modules:
-            if module.name in self.cov:
-                self.save_cov(module)
             if module.name in self.save_logs:
                 self.save_test_logs(module)
-            module.kill()
+            if module.name in self.cov:
+                self.save_cov(module)
+            if module.status == 'running':
+                module.kill()
             time.sleep(1)
         super().tearDown()
 
     def save_cov(self, module):
         name = module.name
-        
+        module.exec_run("killall coverage")
         bits, stat = module.get_archive(f'/{name}/.coverage')
         with open(f'./{name}-cov/{str(uuid.uuid4())}.tar', 'wb') as f:
             for chunk in bits:
