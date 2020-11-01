@@ -45,5 +45,5 @@ class Device(object):
             "type": self.dtype.value,
             "name": self.name,
             "description": self.description,
-            "datasheet":  self.datasheet.serialize()
+            "datasheet": self.datasheet.serialize()
         }

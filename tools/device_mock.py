@@ -15,9 +15,9 @@ def start_switchable_device(client, device):
                 "header": "ack_response",
                 "content": {}
             }
-            new_state= content.get("state")
+            new_state = content.get("state")
             print(f"I have changed state from {state} to {new_state}")
-            state= new_state
+            state = new_state
             client.send_response(res)
 
         if header == 'get_device_state_request':
@@ -31,7 +31,19 @@ def start_switchable_device(client, device):
 
 
 def start_sensor(client, device):
-    pass
+    while True:
+        header, content = client.get_validated_request()
+
+        if header == 'get_sensor_value_request':
+            res = {
+                "header": "get_sensor_value_response",
+                "content": {
+                    "values": {
+                        "value": 1
+                    }
+                }
+            }
+            client.send_response(res)
 
 
 def start(args):
