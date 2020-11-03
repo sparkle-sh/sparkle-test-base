@@ -29,17 +29,6 @@ def start_switchable_device(client, device):
             }
             client.send_response(res)
 
-        if header == 'get_device_datasheet_request':
-            res = {
-                "header": "get_device_datasheet_response",
-                "content": {
-                    "datasheet": {
-                        "states": [0, 1]
-                    }
-                }
-            }
-            client.send_response(res)
-
 
 def start_sensor(client, device):
     while True:
@@ -51,17 +40,6 @@ def start_sensor(client, device):
                 "content": {
                     "values": {
                         "value": 1
-                    }
-                }
-            }
-            client.send_response(res)
-
-        if header == 'get_device_datasheet_request':
-            res = {
-                "header": "get_device_datasheet_response",
-                "content": {
-                    "datasheet": {
-                        "labels": ["value"]
                     }
                 }
             }
