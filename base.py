@@ -23,10 +23,10 @@ class TestBase(unittest.TestCase):
         for module in self.modules:
             if module.name in self.save_logs:
                 self.save_test_logs(module)
-            if module.name in self.cov:
-                self.save_cov(module)
-            if module.status == 'running':
-                module.kill()
+            # if module.name in self.cov:
+            #    self.save_cov(module)
+            # if module.status == 'running':
+            module.kill()
             time.sleep(1)
         super().tearDown()
 
